@@ -2,7 +2,7 @@
 
 ![2be3f1e2411312a667e52774a9760b70.png](_resources/2be3f1e2411312a667e52774a9760b70.png)
 
-When I edit the homework videos, I'm typing the questions number above the video so I can make timestamps on YouTube.
+This project provides a Python script to automate the extraction of timestamps from Adobe Premiere and convert them into a format suitable for YouTube.
 
 ### How can I automate extracting timestamps from Adobe Premiere to the format the YT can understand?
 
