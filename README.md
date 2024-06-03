@@ -15,7 +15,9 @@ This project provides a Python script to automate the extraction of timestamps f
 
 ### Example Command
 
-`main.py <CSV_FILE>`
+```python
+main.py <CSV_FILE>
+```
 
 ### Script Details
 
