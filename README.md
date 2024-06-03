@@ -27,8 +27,6 @@ the script prompts you for the following inputs:
 - **You want to show sub questions? (y/n)**: Whether to include sub-questions in the output.
 - **Enter Premièrement, Deuxièmement, Troisièmement (if exists)**: Enter the section numbers for specific sections if applicable.
 
-&nbsp;
-
 ### Output
 
 The script generates an `output.txt` file containing the formatted timestamps suitable for YouTube.
