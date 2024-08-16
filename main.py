@@ -43,7 +43,7 @@ if sub_questions == 'n' or sub_questions == '':
             unique_questions[question_number] = row['Start Time']
 
     with open('output.txt', 'w') as f:
-        f.write("timecodes\n")
+        f.write("Timecodes\n00:00:00 - Introduction\n")
         for question, start_time in unique_questions.items():
             if "Question 1" in question and len(sections) == len(unique_questions):
                 f.write(f"{start_time} - {question} (Premièrement: {section_names[sections[0]-1]})\n")
