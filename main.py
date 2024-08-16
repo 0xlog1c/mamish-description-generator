@@ -56,7 +56,7 @@ if sub_questions == 'n' or sub_questions == '':
 else:
     last_written_question = ""
     with open('output.txt', 'w') as f:
-        f.write("timecodes\n")
+        f.write("Timecodes\n00:00:00 - Introduction\n")
         for line in csv_file['Combined']:
             question_text = line.split(' - (')[1]
             if question_text != last_written_question:
