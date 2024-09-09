@@ -39,7 +39,7 @@ Welcome to **Mamish YouTube Description Generator**! 🚀 This tool helps you au
 
 2. Install dependencies:
     ```bash
-    pip install streamlit pandas
+    pip install -r req.txt
     ```
 
 3. Run the app:
