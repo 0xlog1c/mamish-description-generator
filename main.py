@@ -1,65 +1,100 @@
+import streamlit as st
 import pandas as pd
 
-timestamps = input("Enter timestamps of Adobe Premiere(CSV): ")
-sub_questions = input("You want to show sub questions? (y/n): ")
-sections = input("Enter Premièrement,Deuxièmement,Troisièmement (if exists) \n\
-[1] for  Choisissez la bonne réponse \n\
-[2] for Questions variées \n\
-[3] for Problèmes \n\
-=>  ").split(" ")
-if '' in sections:
-    sections = []
-else:
-    sections = [int(i) for i in sections]
+start_description = ("Bienvenue sur la chaîne de Moustafa Mamish ! 🌟\n\n"
+                  "https://www.facebook.com/monsieurmamish\n\n"
+                  "Timecodes\n"
+                  "00:00:00 - Introduction\n")
+end_description = ("\nAbonnez-vous pour ne manquer aucune de mes vidéos et ensemble, maîtrisons les secrets des mathématiques et de la physique ! 📚✨\n\n"
+                   "#maths #mathematics #mathematique #mathématique #mathematiques #mathématiques #physics #Éducation #CoursEnLigne")
 
+st.set_page_config(
+    page_title="YT Description Generator",
+    layout="wide"
+)
+
+st.title("Mamish YouTube Description Generator")
+
+st.markdown("[Mamish's YT Channel](https://www.youtube.com/@monsieurmamish)")
+
+# Upload Timestamps CSV file
+timestamps = st.file_uploader("Upload a CSV file with timestamps", type="csv")
+
+# Select sections (1 for 'Premièrement', 2 for 'Deuxièmement', 3 for 'Troisièmement')
+sections = st.multiselect(
+    "Select sections for each question (if applicable)",
+    options=[1, 2, 3],
+    format_func=lambda x: ["Choisissez la bonne réponse", "Questions variées", "Problèmes"][x-1],
+    help="1 for Premièrement, 2 for Deuxièmement, 3 for Troisièmement"
+)
 section_names = ["Choisissez la bonne réponse", "Questions variées", "Problèmes"]
 
-csv_file = pd.read_csv(timestamps)
-csv_file = csv_file.drop(['Video Track', 'Layer ID'], axis=1)
+# Select whether to show sub-questions
+sub_questions = st.radio(
+    "Display sub-questions?",
+    ("Yes", "No"),
+    index=1
+)
 
-def removeSeconds(timestamp):
+def remove_seconds(timestamp):
     return timestamp[:-3]
 
-csv_file['Start Time'] = csv_file['Start Time'].apply(removeSeconds)
-csv_file['End Time'] = csv_file['End Time'].apply(removeSeconds)
-
-def modifyText(text):
+def modify_text(text):
     if " \r" in text:
         return text.replace("\r", "- ").strip()
     return text.replace("\r", " - ").strip()
 
-csv_file['Text'] = csv_file["Text"].apply(modifyText)
+def combine_text_and_timestamps(row):
+    return f"{row['Start Time']} - ({row['Text']})"
 
-def combine_text_and_timestamps(csv):
-    return f"{csv['Start Time']} - ({csv['Text']})"
+if timestamps:
+    csv_file = pd.read_csv(timestamps)
+    csv_file = csv_file.drop(columns=['Video Track', 'Layer ID'], errors='ignore')
+    csv_file['Start Time'] = csv_file['Start Time'].apply(remove_seconds)
+    csv_file['End Time'] = csv_file['End Time'].apply(remove_seconds)
+    csv_file['Text'] = csv_file['Text'].apply(modify_text)
+    csv_file['Combined'] = csv_file.apply(combine_text_and_timestamps, axis=1)
 
-csv_file['Combined'] = csv_file.apply(combine_text_and_timestamps, axis=1)
+    with st.expander("View CSV File"):
+        st.write("Data from the uploaded CSV file:")
+        st.dataframe(csv_file)
 
-if sub_questions == 'n' or sub_questions == '':
-    unique_questions = {}
-    for index, row in csv_file.iterrows():
-        question_number = row['Text'].split(' - ')[0].strip()
-        if question_number not in unique_questions:
-            unique_questions[question_number] = row['Start Time']
+    final_text = start_description
 
-    with open('output.txt', 'w') as f:
-        f.write("Timecodes\n00:00:00 - Introduction\n")
-        for question, start_time in unique_questions.items():
-            if "Question 1" in question and len(sections) == len(unique_questions):
-                f.write(f"{start_time} - {question} (Premièrement: {section_names[sections[0]-1]})\n")
-            elif "Question 2" in question and len(sections) == len(unique_questions):
-                f.write(f"{start_time} - {question} (Deuxièmement: {section_names[sections[1]-1]})\n")
-            elif "Question 3" in question and len(sections) == len(unique_questions):
-                f.write(f"{start_time} - {question} (Troisièmement: {section_names[sections[2]-1]})\n")
+    # If sub-questions should not be shown
+    if sub_questions == 'No':
+        unique_questions = {}
+        for _, row in csv_file.iterrows():
+            question = row['Text'].split(' - ')[0].strip()
+            if question not in unique_questions:
+                unique_questions[question] = row['Start Time']
+
+        for idx, (question, start_time) in enumerate(unique_questions.items(), start=1):
+            if sections and idx <= len(sections):  # Add sections based on user input
+                section_name = section_names[sections[idx - 1] - 1]  # Get section name
+                final_text += f"{start_time} - {question} ({['Premièrement', 'Deuxièmement', 'Troisièmement'][idx - 1]}: {section_name})\n"
             else:
-                f.write(f"{start_time} - {question}\n")
-else:
-    last_written_question = ""
-    with open('output.txt', 'w') as f:
-        f.write("Timecodes\n00:00:00 - Introduction\n")
+                final_text += f"{start_time} - {question}\n"
+
+    # If sub-questions should be shown
+    else:
+        last_written_question = ""
         for line in csv_file['Combined']:
             question_text = line.split(' - (')[1]
             if question_text != last_written_question:
-                f.write(f"{line}\n")
+                final_text += f"{line}\n"
                 last_written_question = question_text
 
+    final_text += end_description
+
+    # Display the final generated YouTube description
+    with st.expander("Generated YouTube Description"):
+        st.text_area("Output: ", final_text, height=300)
+
+    # Add a button to download the final text as a .txt file
+    st.download_button(
+        label="Download Description as Text File",
+        data=final_text,
+        file_name=f"youtube_description.txt",
+        mime="text/plain"
+    )
