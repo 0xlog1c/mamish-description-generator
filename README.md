@@ -1,34 +1,68 @@
-# Timestamps Automation
+# 🎬 Mamish YouTube Description Generator 📜
 
-![2be3f1e2411312a667e52774a9760b70.png](_resources/2be3f1e2411312a667e52774a9760b70.png)
+---
 
-This project provides a Python script to automate the extraction of timestamps from Adobe Premiere and convert them into a format suitable for YouTube.
+Welcome to **Mamish YouTube Description Generator**! 🚀 This tool helps you automate the creation of YouTube video descriptions with sections based on timestamps and user input. It's perfect for streamlining your workflow and ensuring consistency in your video descriptions. 🎥
 
-### How can I automate extracting timestamps from Adobe Premiere to the format the YT can understand?
+![img.png](screenshots/website.png)
 
-### **Usage:**
+---
 
-1.  **Double Click on Text Layer**: In Adobe Premiere, double-click on the text layer containing your timestamps.
-2.  **Export to CSV File**: Export the timestamps to a CSV file.
-3.  **Run the Script on the CSV File**: Use the provided Python script to process the CSV file.
-4.  **Boom! You Have It**: The script will generate a `output.txt` file with the formatted timestamps.
+## 📦 Features
 
-### Example Command
+- 📄 **Upload Timestamps**: Easily upload a CSV file containing timestamps.
+- 🔢 **Section Selection**: Choose between three customizable sections for each question.
+- ❓ **Sub-questions Display**: Decide whether to show sub-questions or just the main ones.
+- 📂 **Download**: Get your generated description in a `.txt` file for easy copy-paste into YouTube!
 
-```python
-main.py <CSV_FILE>
-```
+---
 
-### Script Details
+## 🛠 How It Works
 
-the script prompts you for the following inputs:
+1. **Upload a CSV File**: The CSV should include timestamps and questions from your video. You can upload it using the `Upload` button.
+2. **Customize Sections**: Choose which sections your video should include, with options like:
+   - *Premièrement* (First)
+   - *Deuxièmement* (Second)
+   - *Troisièmement* (Third)
+3. **Sub-questions?**: You have the option to display or hide sub-questions.
+4. **Generate & Download**: View the generated description and download it as a text file.
 
-![f05896ad64505eae664bd5817cc363ac.png](_resources/f05896ad64505eae664bd5817cc363ac.png)
+---
 
-- **Enter timestamps of Adobe Premiere(CSV)**: The path to the CSV file exported from Adobe Premiere.
-- **You want to show sub questions? (y/n)**: Whether to include sub-questions in the output.
-- **Enter Premièrement, Deuxièmement, Troisièmement (if exists)**: Enter the section numbers for specific sections if applicable.
+## 🚀 Getting Started
 
-### Output
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/your-repo/mamish-description-generator.git
+    cd mamish-description-generator
+    ```
 
-The script generates an `output.txt` file containing the formatted timestamps suitable for YouTube.
+2. Install dependencies:
+    ```bash
+    pip install streamlit pandas
+    ```
+
+3. Run the app:
+    ```bash
+    streamlit run app.py
+    ```
+---
+
+## 📊 CSV File Format
+
+The CSV file should have the following columns:
+- `Start Time`: The timestamp of the section in the format `hh:mm:ss`.
+- `End Time`: The end timestamp (optional).
+- `Text`: The content of the section.
+
+💡 **Note**: The `Video Track` and `Layer ID` columns (if present) will be automatically ignored.
+
+---
+
+## 💡 Example
+
+Here’s an example CSV file content:
+![img.png](screenshots/csv.png)
+
+Here's the output:
+![img.png](screenshots/img.png)
